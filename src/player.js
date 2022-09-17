@@ -14,6 +14,14 @@ export default class Player {
         this.direction = [];
     }
 
+    get pos() {
+        return [this.x, this.y];
+    }
+
+    get mapPos() {
+        return [Math.floor(this.x), Math.floor(this.y)];
+    }
+
     move(direction) {
         if (!this.direction.includes(direction)) {
             this.direction.push(direction);
@@ -64,7 +72,6 @@ export default class Player {
 
     checkWallCollision(dx, dy) {
         const scale = this.size / this.game.deltaTime;
-        console.log(scale);
         if (
             this.checkWall(Math.floor(this.x + dx * scale), Math.floor(this.y))
         ) {
@@ -82,15 +89,15 @@ export default class Player {
     }
 
     draw(ctx) {
-        ctx.strokeStyle = 'yellow';
-        ctx.beginPath();
-        ctx.moveTo(this.x * 100, this.y * 100);
-        ctx.lineTo(
-            this.x * 100 + 1600 * Math.cos(this.angle),
-            this.y * 100 + 1600 * Math.sin(this.angle)
-        );
-        ctx.stroke();
-        ctx.closePath();
+        // ctx.strokeStyle = 'yellow';
+        // ctx.beginPath();
+        // ctx.moveTo(this.x * 100, this.y * 100);
+        // ctx.lineTo(
+        //     this.x * 100 + 1600 * Math.cos(this.angle),
+        //     this.y * 100 + 1600 * Math.sin(this.angle)
+        // );
+        // ctx.stroke();
+        // ctx.closePath();
 
         ctx.fillStyle = 'green';
         ctx.arc(this.x * 100, this.y * 100, this.size / 2, 0, 2 * Math.PI);

@@ -1,5 +1,6 @@
 import Map from './map.js';
 import Player from './player.js';
+import RayCasting from './raycasting.js';
 
 export default class Game {
     constructor() {
@@ -7,6 +8,7 @@ export default class Game {
         this.map.getMap();
 
         this.player = new Player(this);
+        this.rayCasting = new RayCasting(this);
 
         this.deltaTime = 0;
     }
@@ -15,13 +17,15 @@ export default class Game {
         this.deltaTime = deltaTime;
 
         this.player.update();
+        this.rayCasting.update();
     }
 
     draw(ctx) {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, 1600, 900);
 
-        this.player.draw(ctx);
         this.map.draw(ctx);
+        this.rayCasting.draw(ctx);
+        this.player.draw(ctx);
     }
 }
