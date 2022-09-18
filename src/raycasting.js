@@ -6,6 +6,7 @@ export default class RayCasting {
         this.fov = Math.PI / 3;
         this.numOfRays = 800;
         this.scale = 1600 / this.numOfRays;
+        this.textureSize = 256;
         this.maxDepth = 20;
         this.deltaAngle = this.fov / this.numOfRays;
         this.screenDist = 800 / Math.tan(this.fov / 2);
@@ -14,21 +15,29 @@ export default class RayCasting {
     getObjectsToRender() {
         this.objectsToRender = [];
         for (let ray of this.rayCastingResult) {
-            let wallPos;
-            const [depth, rayAngle] = ray;
+            let wallPos, wallColumn;
+            const { depth, texture, offset } = ray;
 
             const projHeight = this.screenDist / (depth + 0.0001);
+            const rayIndex = this.rayCastingResult.indexOf(ray);
 
-            if (projHeight < 900) {
-                wallPos = [
-                    this.rayCastingResult.indexOf(ray) * this.scale,
-                    450 - Math.floor(projHeight / 2),
-                ];
-            } else {
-                wallPos = [this.rayCastingResult.indexOf(ray) * this.scale, 0];
-            }
+            wallColumn = {
+                dx: offset * (this.textureSize - this.scale),
+                dy: 0,
+                dw: this.scale,
+                dh: this.textureSize,
+            };
+            wallPos = [rayIndex * this.scale, 450 - Math.floor(projHeight / 2)];
 
-            this.objectsToRender.push([depth, this.scale, projHeight, wallPos]);
+            const scale = this.scale;
+            this.objectsToRender.push({
+                depth,
+                scale,
+                wallPos,
+                wallColumn,
+                projHeight,
+                texture,
+            });
         }
     }
 
@@ -42,6 +51,7 @@ export default class RayCasting {
             const sinA = Math.sin(rayAngle);
             const cosA = Math.cos(rayAngle);
             let deltaDepth;
+            let [textureHor, textureVert] = [1, 1];
 
             // horizontals
             let [yHor, dyHor] = sinA > 0 ? [yMap + 1, 1] : [yMap - 1e-6, -1];
@@ -55,6 +65,7 @@ export default class RayCasting {
             for (let i = 0; i < this.maxDepth; i++) {
                 const tileHor = `${Math.floor(xHor)},${Math.floor(yHor)}`;
                 if (Object.keys(this.game.map.worldMap).includes(tileHor)) {
+                    textureHor = this.game.map.worldMap[tileHor];
                     break;
                 }
                 xHor += dxHor;
@@ -74,6 +85,7 @@ export default class RayCasting {
             for (let i = 0; i < this.maxDepth; i++) {
                 const tileVert = `${Math.floor(xVert)},${Math.floor(yVert)}`;
                 if (Object.keys(this.game.map.worldMap).includes(tileVert)) {
+                    textureVert = this.game.map.worldMap[tileVert];
                     break;
                 }
                 xVert += dxVert;
@@ -81,25 +93,29 @@ export default class RayCasting {
                 depthVert += deltaDepth;
             }
 
-            let depth;
+            let depth, texture, offset;
             if (depthVert < depthHor) {
                 depth = depthVert;
+                texture = textureVert;
                 yVert %= 1;
+                offset = cosA > 0 ? yVert : 1 - yVert;
             } else {
                 depth = depthHor;
+                texture = textureHor;
                 xHor %= 1;
+                offset = sinA > 0 ? 1 - xHor : xHor;
             }
 
             depth *= Math.cos(this.game.player.angle - rayAngle);
 
-            this.rayCastingResult.push([depth, rayAngle]);
+            this.rayCastingResult.push({ depth, texture, rayAngle, offset });
             rayAngle += this.deltaAngle;
         }
     }
 
     draw(ctx) {
         for (let ray of this.rayCastingResult) {
-            const [depth, rayAngle] = ray;
+            const { depth, rayAngle } = ray;
             ctx.strokeStyle = 'yellow';
             ctx.beginPath();
             ctx.moveTo(this.game.player.x * 100, this.game.player.y * 100);

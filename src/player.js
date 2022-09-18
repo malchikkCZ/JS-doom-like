@@ -7,8 +7,10 @@ export default class Player {
         this.y = 5;
         this.size = 60;
         this.angle = 0;
+        this.rel = 0;
         this.speed = 0.004;
         this.sensitivity = 0.0001;
+        this.timeout = null;
 
         new InputListener(this);
         this.direction = [];
@@ -33,7 +35,12 @@ export default class Player {
     }
 
     rotate(movementX) {
+        this.timeout && clearTimeout(this.timeout);
+        this.rel = movementX;
         this.angle += movementX * this.sensitivity * this.game.deltaTime;
+        this.timeout = setTimeout(() => {
+            this.rel = 0;
+        }, 10);
     }
 
     movement() {

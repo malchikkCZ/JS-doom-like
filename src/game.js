@@ -9,8 +9,8 @@ export default class Game {
         this.map.getMap();
 
         this.player = new Player(this);
-        this.rayCasting = new RayCasting(this);
         this.objectRenderer = new ObjectRenderer(this);
+        this.rayCasting = new RayCasting(this);
 
         this.deltaTime = 0;
     }
