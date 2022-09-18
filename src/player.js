@@ -6,9 +6,9 @@ export default class Player {
         this.x = 1.5;
         this.y = 5;
         this.size = 60;
-        this.angle = -Math.PI / 2;
+        this.angle = 0;
         this.speed = 0.004;
-        this.sensitivity = 0.0002;
+        this.sensitivity = 0.0001;
 
         new InputListener(this);
         this.direction = [];

@@ -2,10 +2,34 @@ export default class RayCasting {
     constructor(game) {
         this.game = game;
         this.rayCastingResult = [];
+        this.objectsToRender = [];
         this.fov = Math.PI / 3;
         this.numOfRays = 800;
+        this.scale = 1600 / this.numOfRays;
         this.maxDepth = 20;
         this.deltaAngle = this.fov / this.numOfRays;
+        this.screenDist = 800 / Math.tan(this.fov / 2);
+    }
+
+    getObjectsToRender() {
+        this.objectsToRender = [];
+        for (let ray of this.rayCastingResult) {
+            let wallPos;
+            const [depth, rayAngle] = ray;
+
+            const projHeight = this.screenDist / (depth + 0.0001);
+
+            if (projHeight < 900) {
+                wallPos = [
+                    this.rayCastingResult.indexOf(ray) * this.scale,
+                    450 - Math.floor(projHeight / 2),
+                ];
+            } else {
+                wallPos = [this.rayCastingResult.indexOf(ray) * this.scale, 0];
+            }
+
+            this.objectsToRender.push([depth, this.scale, projHeight, wallPos]);
+        }
     }
 
     rayCast() {
@@ -66,6 +90,8 @@ export default class RayCasting {
                 xHor %= 1;
             }
 
+            depth *= Math.cos(this.game.player.angle - rayAngle);
+
             this.rayCastingResult.push([depth, rayAngle]);
             rayAngle += this.deltaAngle;
         }
@@ -88,5 +114,6 @@ export default class RayCasting {
 
     update() {
         this.rayCast();
+        this.getObjectsToRender();
     }
 }

@@ -1,6 +1,6 @@
 import Game from './game.js';
 
-const canvas = document.querySelector('.game-canvas');
+const canvas = document.querySelector('canvas.game-screen');
 const ctx = canvas.getContext('2d');
 
 canvas.requestPointerLock =

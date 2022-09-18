@@ -1,6 +1,7 @@
 import Map from './map.js';
 import Player from './player.js';
 import RayCasting from './raycasting.js';
+import ObjectRenderer from './object-renderer.js';
 
 export default class Game {
     constructor() {
@@ -9,6 +10,7 @@ export default class Game {
 
         this.player = new Player(this);
         this.rayCasting = new RayCasting(this);
+        this.objectRenderer = new ObjectRenderer(this);
 
         this.deltaTime = 0;
     }
@@ -24,8 +26,9 @@ export default class Game {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, 1600, 900);
 
-        this.map.draw(ctx);
-        this.rayCasting.draw(ctx);
-        this.player.draw(ctx);
+        // this.map.draw(ctx);
+        // this.rayCasting.draw(ctx);
+        // this.player.draw(ctx);
+        this.objectRenderer.draw(ctx);
     }
 }

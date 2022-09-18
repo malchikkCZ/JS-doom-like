@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #000000;
+    font-family: 'Bungee Spice', cursive;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.game-screen {
+    border: 2px solid #ff0000;
+}
+
+.game-info {
+    display: flex;
+    width: 1600px;
+    justify-content: space-between;
+    color: #ff0000;
+}
+
+.game-info a {
+    color: inherit;
+}
