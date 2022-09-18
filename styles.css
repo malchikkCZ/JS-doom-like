@@ -5,6 +5,10 @@ body {
     font-family: 'Bungee Spice', cursive;
 }
 
+img {
+    display: none;
+}
+
 .game-container {
     display: flex;
     flex-direction: column;
